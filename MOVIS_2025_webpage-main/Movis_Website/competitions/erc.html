@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>European Rover Challenge - Team MOVIS | VIT Chennai</title>
+    <style>
+        /* Base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #050505 0%, #0f0f1a 50%, #0a0f1c 100%);
+            color: #ffffff;
+            overflow-x: hidden;
+            cursor: none;
+        }
+
+        /* Custom Cursor */
+        .cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #007bff 0%, #00a8ff 70%, transparent 100%);
+            pointer-events: none;
+            z-index: 9999;
+            transition: all 0.1s ease;
+            box-shadow: 0 0 15px #007bff, 0 0 30px #00a8ff, 0 0 45px #00d4ff;
+        }
+
+        .cursor-trail {
+            position: fixed;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #ffffff;
+            pointer-events: none;
+            z-index: 9998;
+            opacity: 0.6;
+            transition: all 0.3s ease;
+        }
+
+        .cursor.hover {
+            transform: scale(2);
+            background: radial-gradient(circle, #ff6b6b 0%, transparent 70%);
+            box-shadow: 0 0 30px #ff6b6b, 0 0 60px #ff6b6b;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 1rem 0;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #00d4ff;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .back-button {
+            color: #ffffff;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            color: #00d4ff;
+            transform: translateX(-5px);
+        }
+
+        /* Competition Header */
+        .competition-header {
+            min-height: 60vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 8rem 2rem 4rem;
+            position: relative;
+            overflow: hidden;
+            background: url('https://roverchallenge.eu/wp-content/uploads/2023/03/ERC2023_Header.jpg') no-repeat center center/cover;
+        }
+
+        .competition-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: transparent;
+            z-index: 0;
+        }
+
+        .competition-header > div {
+            position: relative;
+            z-index: 1;
+            max-width: 1000px;
+        }
+
+        .competition-header h1 {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            color: #00d4ff;
+            text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+        }
+
+        .competition-header p {
+            font-size: 1.5rem;
+            margin: 0 auto 2rem;
+            color: #ffffff;
+            max-width: 800px;
+            line-height: 1.6;
+        }
+
+        /* Competition Content */
+        .competition-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            margin-bottom: 4rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            color: #00d4ff;
+            margin: 3rem 0 1.5rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(90deg, #00d4ff, transparent);
+        }
+
+        p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+            color: #e0e0e0;
+        }
+
+        .highlight {
+            color: #00d4ff;
+            font-weight: bold;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.2);
+            border-color: rgba(0, 212, 255, 0.3);
+        }
+
+        .feature-card h3 {
+            color: #00d4ff;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(45deg, #00d4ff, #007bff);
+            color: #ffffff;
+            padding: 0.8rem 1.8rem;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+            border: none;
+            cursor: none;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 212, 255, 0.4);
+        }
+
+        /* Gallery */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .gallery-item {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            aspect-ratio: 16/9;
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 212, 255, 0.3);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.05);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .competition-header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .competition-header p {
+                font-size: 1.2rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .features-grid, .gallery {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Stars Background */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .star {
+            position: absolute;
+            background: #fff;
+            border-radius: 50%;
+            animation: twinkle 2s infinite;
+        }
+
+        @keyframes twinkle {
+            0% { opacity: 0.2; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.2); }
+            100% { opacity: 0.2; transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Stars Background -->
+    <div class="stars" id="stars"></div>
+
+    <!-- Custom Cursor -->
+    <div class="cursor"></div>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <a href="../movis_space_website.html" class="logo">
+                <span>TEAM MOVIS</span>
+            </a>
+            <a href="../movis_space_website.html#competitions" class="back-button">
+                <span>← Back to Competitions</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Competition Header -->
+    <header class="competition-header">
+        <div>
+            <h1>European Rover Challenge</h1>
+            <p>International competition for Mars rover prototypes and space robotics</p>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="competition-content">
+        <h2 class="section-title">About the Competition</h2>
+        <p>The European Rover Challenge (ERC) is one of the largest international robotics competitions, bringing together student teams from around the world to compete in Mars rover prototype challenges. The competition simulates real Mars mission scenarios, testing the rovers' capabilities in various technical and scientific tasks.</p>
+        
+        <p>ERC serves as a platform for students to develop their skills in robotics, automation, and space technology while competing against top universities globally.</p>
+        
+        <div class="features-grid">
+            <div class="feature-card">
+                <h3>🌍 International Platform</h3>
+                <p>Competing with top universities from around the world in a prestigious European competition.</p>
+            </div>
+            <div class="feature-card">
+                <h3>🤖 Advanced Robotics</h3>
+                <p>Developing sophisticated autonomous systems for extraterrestrial exploration.</p>
+            </div>
+            <div class="feature-card">
+                <h3>🔬 Scientific Research</h3>
+                <p>Conducting scientific experiments and analysis in Mars-analog environments.</p>
+            </div>
+        </div>
+        
+        <h2 class="section-title">Our Participation</h2>
+        <p>Team MOVIS participates in the European Rover Challenge with a focus on innovation, reliability, and scientific excellence. Our rover is designed to tackle the competition's challenges, including autonomous navigation, sample collection, and equipment servicing.</p>
+        
+        <p>We combine cutting-edge technology with robust engineering to create a rover that can operate effectively in the challenging Martian-like terrain of the competition.</p>
+        
+        <div class="features-grid">
+            <div class="feature-card">
+                <h3>🚀 Rover Design</h3>
+                <p>Lightweight yet durable chassis with advanced suspension for rough terrain navigation.</p>
+            </div>
+            <div class="feature-card">
+                <h3>🧠 Autonomous Systems</h3>
+                <p>AI-powered navigation and computer vision for autonomous operation.</p>
+            </div>
+            <div class="feature-card">
+                <h3>🛠️ Mission Equipment</h3>
+                <p>Specialized tools for sample collection, analysis, and equipment servicing.</p>
+            </div>
+        </div>
+        
+        <h2 class="section-title">Gallery</h2>
+        <p>Highlights from our European Rover Challenge journey:</p>
+        
+        <div class="gallery">
+            <div class="gallery-item">
+                <img src="https://roverchallenge.eu/wp-content/uploads/2023/03/ERC2023_1.jpg" alt="Team MOVIS at ERC">
+            </div>
+            <div class="gallery-item">
+                <img src="https://roverchallenge.eu/wp-content/uploads/2023/03/ERC2023_2.jpg" alt="Our rover in action">
+            </div>
+            <div class="gallery-item">
+                <img src="https://roverchallenge.eu/wp-content/uploads/2023/03/ERC2023_3.jpg" alt="Team working on rover systems">
+            </div>
+        </div>
+        
+
+    </main>
+
+    <script>
+        // Create stars for background
+        function createStars() {
+            const stars = document.getElementById('stars');
+            const count = 200;
+            
+            for (let i = 0; i < count; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                
+                // Random size between 1 and 3 pixels
+                const size = Math.random() * 2 + 1;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                
+                // Random position
+                star.style.left = `${Math.random() * 100}%`;
+                star.style.top = `${Math.random() * 100}%`;
+                
+                // Random animation delay
+                star.style.animationDelay = `${Math.random() * 2}s`;
+                star.style.animationDuration = `${Math.random() * 3 + 2}s`;
+                
+                stars.appendChild(star);
+            }
+        }
+
+        // Custom cursor functionality
+        let cursor = document.querySelector('.cursor');
+        let cursorTrails = [];
+        let mouseX = 0, mouseY = 0;
+        let lastMouseX = 0, lastMouseY = 0;
+        let mouseSpeed = 0;
+
+        // Create cursor trails
+        for (let i = 0; i < 5; i++) {
+            let trail = document.createElement('div');
+            trail.className = 'cursor-trail';
+            document.body.appendChild(trail);
+            cursorTrails.push({
+                element: trail,
+                x: 0,
+                y: 0,
+                delay: i * 0.1
+            });
+        }
+
+        // Update cursor position
+        document.addEventListener('mousemove', function(e) {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            
+            cursor.style.left = mouseX + 'px';
+            cursor.style.top = mouseY + 'px';
+        });
+        
+        // Set default cursor color (blue to match text)
+        function setDefaultCursor() {
+            const blueColor = '#00d4ff';
+            cursor.style.background = `radial-gradient(circle, ${blueColor} 0%, transparent 70%)`;
+            cursor.style.boxShadow = `0 0 20px ${blueColor}, 0 0 40px ${blueColor}`;
+            
+            cursorTrails.forEach(trail => {
+                trail.element.style.background = blueColor;
+            });
+        }
+        
+        // Set red cursor for interactive elements
+        function setRedCursor() {
+            const redColor = '#ff6b6b';
+            cursor.style.background = `radial-gradient(circle, ${redColor} 0%, transparent 70%)`;
+            cursor.style.boxShadow = `0 0 20px ${redColor}, 0 0 40px ${redColor}`;
+            
+            cursorTrails.forEach(trail => {
+                trail.element.style.background = redColor;
+            });
+        }
+        
+        // Initialize with default blue color
+        setDefaultCursor();
+
+        // Animate cursor trails
+        function updateTrails() {
+            cursorTrails.forEach((trail, index) => {
+                trail.x += (mouseX - trail.x) * (0.3 - index * 0.02);
+                trail.y += (mouseY - trail.y) * (0.3 - index * 0.02);
+                
+                trail.element.style.left = trail.x + 'px';
+                trail.element.style.top = trail.y + 'px';
+                trail.element.style.opacity = 0.6 - index * 0.1;
+            });
+            requestAnimationFrame(updateTrails);
+        }
+        updateTrails();
+
+        // Hover effects for cursor - change to red on interactive elements
+        document.querySelectorAll('a, button, .cta-button, .comp-card, .skill-item, .social-link, .nav-links a, .feature-card, .gallery-item').forEach(element => {
+            element.addEventListener('mouseenter', function() {
+                cursor.classList.add('hover');
+                setRedCursor();
+            });
+            
+            element.addEventListener('mouseleave', function() {
+                cursor.classList.remove('hover');
+                setDefaultCursor();
+            });
+        });
+
+        // Set cursor colors
+        function setCursorColor(isRed) {
+            const color = isRed ? '#ff6b6b' : '#00d4ff';
+            cursor.style.background = `radial-gradient(circle, ${color} 0%, transparent 70%)`;
+            cursor.style.boxShadow = `0 0 20px ${color}, 0 0 40px ${color}`;
+        }
+        
+        // Initialize cursor
+        cursor.style.display = 'block';
+        setCursorColor(false);
+        
+        // Add hover effect for interactive elements
+        const interactiveElements = document.querySelectorAll('a, button, .cta-button, .feature-card, .gallery-item, .hoverable');
+        
+        interactiveElements.forEach(element => {
+            element.addEventListener('mouseenter', () => {
+                setCursorColor(true);
+                cursor.classList.add('hover');
+            });
+            
+            element.addEventListener('mouseleave', () => {
+                setCursorColor(false);
+                cursor.classList.remove('hover');
+            });
+        });
+
+        // Add animation class to elements when they come into view
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('fade-in-visible');
+                }
+            });
+        }, {
+            threshold: 0.1
+        });
+
+        document.querySelectorAll('.feature-card, .section-title, p, .gallery-item').forEach(el => {
+            el.classList.add('fade-in');
+            observer.observe(el);
+        });
+
+        // Initialize stars when the page loads
+        window.addEventListener('load', createStars);
+    </script>
+
+    <style>
+        /* Fade-in animation */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+
+        .fade-in-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</body>
+</html>
