@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { ChevronDown, Rocket, Cpu, Satellite } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import heroRover from '@/assets/hero-rover.jpg';
 
 function FloatingParticle({ delay, duration, x, y }: { delay: number; duration: number; x: string; y: string }) {
   return (
@@ -157,11 +156,15 @@ export function HeroSection() {
           className="mt-16 relative"
         >
           <div className="relative rounded-2xl overflow-hidden border border-border/50 shadow-card">
-            <img 
-              src={heroRover} 
-              alt="Advanced Mars Rover" 
-              className="w-full max-w-4xl mx-auto object-cover"
-            />
+            <div className="aspect-[16/9] max-w-4xl mx-auto bg-gradient-to-br from-space-700 via-space-600 to-space-800 flex items-center justify-center relative">
+              <div className="absolute inset-0 grid-overlay opacity-20" />
+              <div className="relative z-10 text-center p-12">
+                <Rocket className="w-32 h-32 mx-auto mb-6 text-primary animate-pulse-glow" />
+                <h3 className="text-3xl font-orbitron font-bold text-gradient mb-3">Advanced Rover Systems</h3>
+                <p className="text-muted-foreground max-w-md mx-auto">Pushing the boundaries of exploration with cutting-edge technology</p>
+              </div>
+              <div className="scan-line" />
+            </div>
             <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
           </div>
           
